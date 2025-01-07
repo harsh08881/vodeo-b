@@ -14,42 +14,9 @@ app.get("/", (req, res) => {
 });
 
 app.get("/health", (req, res) => {
-    res.status(200).send("OK");
-  });
-
-// Create HTTP server and bind Socket.IO
-const server = http.createServer(app);
-const io = new Server(server, {
-  cors: {
-    origin: "*", // Allow all origins, replace with your frontend URL in production
-  },
+    res.status(200).send("OK"); 
 });
 
-// Socket.IO Connection
-io.on("connection", (socket) => {
-  console.log("User connected:", socket.id);
-
-  socket.on("offer", (data) => {
-    socket.broadcast.emit("offer", data);
-  });
-
-  socket.on("answer", (data) => {
-    socket.broadcast.emit("answer", data);
-  });
-
-  socket.on("ice-candidate", (data) => {
-    socket.broadcast.emit("ice-candidate", data);
-  });
-
-  socket.on("disconnect", () => {
-    console.log("User disconnected:", socket.id);
-  });
-});
-
-// Start server locally (for testing only)
-
-server.listen(PORT, () => {
-    console.log(`Server running on http://localhost:${PORT}`);
- });
+app.listen(PORT);
 
 
