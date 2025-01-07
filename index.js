@@ -3,15 +3,7 @@ const http = require("http");
 const { Server } = require("socket.io");
 
 const app = express();
-const PORT = 3000;
-
-// Create HTTP server and bind Socket.IO
-const server = http.createServer(app);
-const io = new Server(server, {
-  cors: {
-    origin: "*", // Allow all origins, replace with your frontend URL in production
-  },
-});
+const PORT = process.env.PORT || 3000;
 
 // Middleware
 app.use(express.json());
@@ -19,6 +11,14 @@ app.use(express.json());
 // Basic Express Route
 app.get("/", (req, res) => {
   res.send("Socket.IO and Express server is running!");
+});
+
+// Create HTTP server and bind Socket.IO
+const server = http.createServer(app);
+const io = new Server(server, {
+  cors: {
+    origin: "*", // Allow all origins, replace with your frontend URL in production
+  },
 });
 
 // Socket.IO Connection
@@ -42,9 +42,12 @@ io.on("connection", (socket) => {
   });
 });
 
-// Start the server
-server.listen(PORT, () => {
-  console.log(`Express and Socket.IO server running on http://localhost:${PORT}`);
-});
+// Start server locally (for testing only)
+if (process.env.NODE_ENV !== "production") {
+  server.listen(PORT, () => {
+    console.log(`Server running on http://localhost:${PORT}`);
+  });
+}
 
-module.exports = { app, io };
+// Export app for Vercel
+module.exports = app;
