@@ -17,37 +17,27 @@ app.get("/health", (req, res) => {
   res.status(200).send("OK");
 });
 
-// Create HTTP server and bind Socket.IO
-const server = http.createServer(app);
 const io = new Server(server, {
-  cors: {
-    origin: "*", // Allow all origins, replace with your frontend URL in production
-  },
-});
-
-// Socket.IO Connection
-io.on("connection", (socket) => {
-    console.log("User connected:", socket.id);
+    cors: {
+      origin: "*", // Allow all origins (adjust for production)
+      methods: ["GET", "POST"],
+    },
+  });
   
-    // Notify all users about the new connection
-    socket.broadcast.emit("user-connected", { userId: socket.id });
+  io.on("connection", (socket) => {
+    console.log("A user connected:", socket.id);
   
-    socket.on("offer", (data) => {
-      socket.broadcast.emit("offer", data);
-    });
-  
-    socket.on("answer", (data) => {
-      socket.broadcast.emit("answer", data);
-    });
-  
-    socket.on("ice-candidate", (data) => {
-      socket.broadcast.emit("ice-candidate", data);
+    // Handle message reception
+    socket.on("send-message", (data) => {
+      console.log("Message received:", data);
+      io.emit("receive-message", data); // Broadcast the message to all clients
     });
   
     socket.on("disconnect", () => {
       console.log("User disconnected:", socket.id);
     });
   });
+
   
 
 // Start server locally (for testing only)
