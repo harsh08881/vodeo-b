@@ -27,24 +27,28 @@ const io = new Server(server, {
 
 // Socket.IO Connection
 io.on("connection", (socket) => {
-  console.log("User connected:", socket.id);
-
-  socket.on("offer", (data) => {
-    socket.broadcast.emit("offer", data);
+    console.log("User connected:", socket.id);
+  
+    // Notify all users about the new connection
+    socket.broadcast.emit("user-connected", { userId: socket.id });
+  
+    socket.on("offer", (data) => {
+      socket.broadcast.emit("offer", data);
+    });
+  
+    socket.on("answer", (data) => {
+      socket.broadcast.emit("answer", data);
+    });
+  
+    socket.on("ice-candidate", (data) => {
+      socket.broadcast.emit("ice-candidate", data);
+    });
+  
+    socket.on("disconnect", () => {
+      console.log("User disconnected:", socket.id);
+    });
   });
-
-  socket.on("answer", (data) => {
-    socket.broadcast.emit("answer", data);
-  });
-
-  socket.on("ice-candidate", (data) => {
-    socket.broadcast.emit("ice-candidate", data);
-  });
-
-  socket.on("disconnect", () => {
-    console.log("User disconnected:", socket.id);
-  });
-});
+  
 
 // Start server locally (for testing only)
 
