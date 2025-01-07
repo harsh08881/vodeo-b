@@ -13,6 +13,10 @@ app.get("/", (req, res) => {
   res.send("Socket.IO and Express server is running!");
 });
 
+app.get("/health", (req, res) => {
+    res.status(200).send("OK");
+  });
+
 // Create HTTP server and bind Socket.IO
 const server = http.createServer(app);
 const io = new Server(server, {
