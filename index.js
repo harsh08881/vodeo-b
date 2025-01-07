@@ -43,10 +43,9 @@ io.on("connection", (socket) => {
 });
 
 // Start server locally (for testing only)
-if (process.env.NODE_ENV !== "production") {
-  server.listen(PORT, () => {
+
+server.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);
-  });
-}
+ });
 
 
